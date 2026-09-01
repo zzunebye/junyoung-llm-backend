@@ -1,0 +1,68 @@
+# Dev Log
+
+In this file includes the thoughts and decision making process for writing the solutions for backend challenge of lalamove.
+
+I've just read the challenge problem statement and requirements. The document has given very clear contract, about order service API server.
+
+Some noticable points from requirements are:
+
+- Highlight on concurrency on data.
+- Need to call an external API (or map service of the system) to get the distance of the order. 
+- No requirement for auth. 
+- Spining off must be easy. 
+- Many requirements about data validation on application layer. 
+- `GET /orders` requires a pagination.
+- Proper error codes for expected business errors.
+
+What I need to decide:
+
+- Tech stack
+- DB schema
+  - + How to control concurrency
+
+What this repo will not have:
+
+- Database schema management tool
+- Authentication & Authorization
+
+---
+
+First, I need to use setup the repository.
+
+This project will use Java 17 with Spring Boot, and postgres as database.
+
+Here are what I need in order of development (roughly)
+
+1. Create a project using spring boot
+2. Write docker-compose.yml to spin up the dependencies
+3. Create relevant database tables. No need for the database schema management tool 
+4. Create API endpoints controller with mapping to URI.
+5. Implement each of the endpoints
+  1. Create DTO classes
+  2. Validation
+  3. DB operations
+6. Create an google map API key, and replace mock provider with actual implemented provider.
+  1. Test
+7. Write testings. 
+
+---
+
+DB Schema
+
+XXX place an order, and YYY takes an order. There is no requirement for the entity(s) who create or take order, so we need only a `orders` table.
+
+orders:
+
+
+- id PK BIGINT
+- status
+  - UNASSIGNED
+  - TAKEN
+- start_latitude
+- start_longitude
+- end_latitude
+- end_longitude
+- distance 
+- created_at
+
+all fields are NOT NULL.
