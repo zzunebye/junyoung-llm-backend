@@ -47,8 +47,8 @@ public class OrderController {
 
     @GetMapping
     public List<OrderResponse> getOrders(
-            @RequestParam String page,
-            @RequestParam String limit) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit) {
         return orderService.getOrders(page, limit);
     }
 

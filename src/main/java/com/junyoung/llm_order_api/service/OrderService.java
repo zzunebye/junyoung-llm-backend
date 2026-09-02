@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import org.slf4j.Logger;
@@ -65,9 +66,10 @@ public class OrderService {
     }
 
     public List<OrderResponse> getOrders(
-            String page,
-            String limit) {
-        return orderRepository.findAll().stream()
+            int page,
+            int limit) {
+        PageRequest pageable = PageRequest.of(page, limit);
+        return orderRepository.findAll(pageable).stream()
                 .map(OrderResponse::from)
                 .collect(Collectors.toList());
     }
