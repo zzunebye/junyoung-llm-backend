@@ -37,11 +37,11 @@ public class OrderService {
             double endLon = Double.parseDouble(request.destination().get(1));
             int distance = distanceService.getDistance(startLat, startLon, endLat, endLon);
             Order order = Order.create(startLat, startLon, endLat, endLon, distance);
-            orderRepository.save(order);
+            Order savedOrder = orderRepository.save(order);
             return new PlaceOrderResponse(
-                    order.getId(),
-                    order.getDistance(),
-                    order.getStatus().name());
+                    savedOrder.getId(),
+                    savedOrder.getDistance(),
+                    savedOrder.getStatus().name());
         } catch (NumberFormatException e) {
             throw new BusinessException(ErrorCode.VALIDATION_ERROR);
         }
