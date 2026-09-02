@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,8 +21,8 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.from(errorCode));
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+    @ExceptionHandler({ MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class })
+    public ResponseEntity<ErrorResponse> handleValidationException(Exception ex) {
         log.warn("Validation Exception: {} - {}", ex.getClass().getName(), ex.getMessage());
         ErrorCode errorCode = ErrorCode.VALIDATION_ERROR;
         return ResponseEntity
