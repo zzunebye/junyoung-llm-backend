@@ -52,16 +52,17 @@ public class OrderService {
     }
 
     public TakeOrderResponse takeOrder(TakeOrderRequest request, Long orderId) {
-        if (request.status().equals("TAKEN")) {
-            throw new BusinessException(ErrorCode.ORDER_ALREADY_TAKEN);
-        }
-
         Order order = orderRepository
                 .findById(orderId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
 
+        if (order.getStatus().equals(OrderStatus.TAKEN)) {
+            throw new BusinessException(ErrorCode.ORDER_ALREADY_TAKEN);
+        }
+
         order.setStatus(OrderStatus.TAKEN);
         orderRepository.save(order);
+
         return new TakeOrderResponse("SUCCESS");
     }
 
