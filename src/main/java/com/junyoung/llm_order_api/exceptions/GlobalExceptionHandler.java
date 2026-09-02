@@ -21,7 +21,9 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.from(errorCode));
     }
 
-    @ExceptionHandler({ MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class })
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class,
+            MethodArgumentTypeMismatchException.class })
     public ResponseEntity<ErrorResponse> handleValidationException(Exception ex) {
         log.warn("Validation Exception: {} - {}", ex.getClass().getName(), ex.getMessage());
         ErrorCode errorCode = ErrorCode.VALIDATION_ERROR;

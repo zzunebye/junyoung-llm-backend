@@ -30,6 +30,22 @@ public class OrderService {
 
     @Transactional
     public PlaceOrderResponse placeOrder(PlaceOrderRequest request) {
+        try {
+            double startLat = Double.parseDouble(request.origin().get(0));
+            double startLon = Double.parseDouble(request.origin().get(1));
+            double endLat = Double.parseDouble(request.destination().get(0));
+            double endLon = Double.parseDouble(request.destination().get(1));
+            int distance = distanceService.getDistance(startLat, startLon, endLat, endLon);
+            Order order = Order.create(startLat, startLon, endLat, endLon, distance);
+            orderRepository.save(order);
+            return new PlaceOrderResponse(
+                    order.getId(),
+                    order.getDistance(),
+                    order.getStatus().name());
+        } catch (NumberFormatException e) {
+            throw new BusinessException(ErrorCode.VALIDATION_ERROR);
+        }
+
     }
 
     @Transactional
