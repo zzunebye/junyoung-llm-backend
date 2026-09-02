@@ -63,6 +63,28 @@ public class OrderControllerTest {
         }
 
         @Test
+        void getOrders_returnsBadRequest_WhenWrongArgOnPage() throws Exception {
+                when(orderService.getOrders(anyInt(), anyInt()))
+                                .thenReturn(List.of(new OrderResponse(1L, 1000, OrderStatus.UNASSIGNED)));
+
+                mockMvc.perform(get("/orders")
+                                .param("page", "one"))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
+        }
+
+        @Test
+        void getOrders_returnsBadRequest_WhenWrongArgOnLimit() throws Exception {
+                when(orderService.getOrders(anyInt(), anyInt()))
+                                .thenReturn(List.of(new OrderResponse(1L, 1000, OrderStatus.UNASSIGNED)));
+
+                mockMvc.perform(get("/orders")
+                                .param("limit", "one"))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
+        }
+
+        @Test
         void placeOrder_returnsOk() throws Exception {
                 when(orderService.placeOrder(any(PlaceOrderRequest.class)))
                                 .thenReturn(new PlaceOrderResponse(1L, 1000, "UNASSIGNED"));
@@ -102,6 +124,20 @@ public class OrderControllerTest {
                                 .content("""
                                                         {
                                                           "origin": ["22.3193", 114.1694],
+                                                          "destination": ["22.3964", "114.1095"]
+                                                        }
+                                                """))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
+        }
+
+        @Test
+        void placeOrder_returnsBadRequest_WhenCoordinateWithWrongString() throws Exception {
+                mockMvc.perform(post("/orders")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                                        {
+                                                          "origin": ["22.3193", "WRONG_NUMBER"],
                                                           "destination": ["22.3964", "114.1095"]
                                                         }
                                                 """))
