@@ -2,9 +2,11 @@ package com.junyoung.llm_order_api.service;
 
 import java.util.Random;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 @Service
+@ConditionalOnProperty(name = "maps.provider", havingValue = "FAKE")
 public class FakeDistanceService implements DistanceService {
 
     @Override

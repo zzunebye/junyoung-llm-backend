@@ -2,7 +2,11 @@ package com.junyoung.llm_order_api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
+import com.junyoung.llm_order_api.maps.MapsProperties;
+
+@EnableConfigurationProperties(MapsProperties.class)
 @SpringBootApplication
 public class LlmOrderApiApplication {
 

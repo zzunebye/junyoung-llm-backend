@@ -9,7 +9,7 @@ services:
       DB_NAME: orders
       DB_USER: orders_user
       DB_PASSWORD: orders_password
-      GOOGLE_MAP_API_KEY: ${GOOGLE_MAP_API_KEY}
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
     depends_on:
       db:
         condition: service_healthy
