@@ -51,7 +51,7 @@ public class OrderService {
     public List<OrderResponse> getOrders(
             int page,
             int limit) {
-        PageRequest pageable = PageRequest.of(page, limit);
+        PageRequest pageable = PageRequest.of(page - 1, limit);
         return orderRepository.findAll(pageable).stream()
                 .map(OrderResponse::from)
                 .collect(Collectors.toList());
