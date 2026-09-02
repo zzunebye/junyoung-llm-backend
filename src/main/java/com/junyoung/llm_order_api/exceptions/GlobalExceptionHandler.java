@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ErrorCode.VALIDATION_ERROR;
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(new ErrorResponse(errorCode.name(), ex.getMessage()));
+                .body(ErrorResponse.from(errorCode));
     }
 
     @ExceptionHandler(Exception.class)
