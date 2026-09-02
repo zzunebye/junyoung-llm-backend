@@ -44,6 +44,18 @@ public class Order {
     @Column(name = "updated_at", nullable = false, insertable = false, updatable = false)
     private Instant updatedAt;
 
+    public static Order create(Double startLatitude, Double startLongitude, Double endLatitude, Double endLongitude,
+            Integer distance) {
+        Order order = new Order();
+        order.setStartLatitude(startLatitude);
+        order.setStartLongitude(startLongitude);
+        order.setEndLatitude(endLatitude);
+        order.setEndLongitude(endLongitude);
+        order.setDistance(distance);
+        order.setStatus(OrderStatus.UNASSIGNED);
+        return order;
+    }
+
     public OrderStatus getStatus() {
         return status;
     }

@@ -4,9 +4,10 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.validation.annotation.Validated;
-
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.junyoung.llm_order_api.dto.OrderResponse;
 import com.junyoung.llm_order_api.dto.PlaceOrderRequest;
 import com.junyoung.llm_order_api.dto.PlaceOrderResponse;
@@ -24,21 +25,28 @@ import jakarta.validation.Valid;
 @Validated
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final DistanceService distanceService;
+    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
 
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, DistanceService distanceService) {
         this.orderRepository = orderRepository;
+        this.distanceService = distanceService;
     }
 
     public PlaceOrderResponse placeOrder(@Valid PlaceOrderRequest request) {
-        Order order = new Order();
-        order.setStartLatitude(Double.parseDouble(request.origin().get(0)));
-        order.setStartLongitude(Double.parseDouble(request.origin().get(1)));
-        order.setEndLatitude(Double.parseDouble(request.destination().get(0)));
-        order.setEndLongitude(Double.parseDouble(request.destination().get(1)));
-        order.setDistance(0);
-        order.setCreatedAt(Instant.now());
+        double startLat = Double.parseDouble(request.origin().get(0));
+        double startLon = Double.parseDouble(request.origin().get(1));
+        double endLat = Double.parseDouble(request.destination().get(0));
+        double endLon = Double.parseDouble(request.destination().get(1));
+        int distance = distanceService.getDistance(startLat, startLon, endLat, endLon);
+        log.info("Distance: {}", distance);
+        Order order = Order.create(startLat, startLon, endLat, endLon, distance);
 
-        return new PlaceOrderResponse(orderRepository.save(order).getId(), order.getDistance(),
+        log.info("Placed order: {}", order);
+
+        return new PlaceOrderResponse(
+                orderRepository.save(order).getId(),
+                order.getDistance(),
                 order.getStatus().name());
     }
 
