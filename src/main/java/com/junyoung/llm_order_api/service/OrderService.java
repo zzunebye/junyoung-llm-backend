@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.junyoung.llm_order_api.dto.OrderResponse;
@@ -34,23 +34,23 @@ public class OrderService {
         this.distanceService = distanceService;
     }
 
+    @Transactional
     public PlaceOrderResponse placeOrder(@Valid PlaceOrderRequest request) {
         double startLat = Double.parseDouble(request.origin().get(0));
         double startLon = Double.parseDouble(request.origin().get(1));
         double endLat = Double.parseDouble(request.destination().get(0));
         double endLon = Double.parseDouble(request.destination().get(1));
         int distance = distanceService.getDistance(startLat, startLon, endLat, endLon);
-        log.info("Distance: {}", distance);
         Order order = Order.create(startLat, startLon, endLat, endLon, distance);
-
-        log.info("Placed order: {}", order);
+        orderRepository.save(order);
 
         return new PlaceOrderResponse(
-                orderRepository.save(order).getId(),
+                order.getId(),
                 order.getDistance(),
                 order.getStatus().name());
     }
 
+    @Transactional
     public TakeOrderResponse takeOrder(TakeOrderRequest request, Long orderId) {
         Order order = orderRepository
                 .findById(orderId)
