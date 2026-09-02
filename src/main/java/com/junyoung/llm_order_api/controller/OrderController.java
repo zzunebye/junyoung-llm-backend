@@ -40,9 +40,9 @@ public class OrderController {
     @PatchMapping("/{id}")
     public TakeOrderResponse takeOrder(
             @Valid @RequestBody TakeOrderRequest request,
-            @PathVariable("id") @NotNull Long id) {
+            @PathVariable(name = "id") @NotNull Long orderId) {
 
-        return orderService.takeOrder(request, id);
+        return orderService.takeOrder(request, orderId);
     }
 
     @GetMapping
