@@ -34,29 +34,33 @@ public class GoogleDistanceService implements DistanceService {
 
         @Override
         public int getDistance(double originLat, double originLon, double destLat, double destLon) {
+                try {
+                        var request = new ComputeRoutesRequest(
+                                        new ComputeRoutesRequest.Waypoint(
+                                                        new ComputeRoutesRequest.Location(
+                                                                        new ComputeRoutesRequest.LatLng(originLat,
+                                                                                        originLon))),
+                                        new ComputeRoutesRequest.Waypoint(
+                                                        new ComputeRoutesRequest.Location(
+                                                                        new ComputeRoutesRequest.LatLng(destLat,
+                                                                                        destLon))),
+                                        "DRIVE");
+                        ComputeRoutesResponse response = restClient.post()
+                                        .uri(COMPUTE_ROUTES_URI)
+                                        .header(
+                                                        "X-Goog-FieldMask",
+                                                        X_GOOG_FIELD_MASK)
+                                        .body(request)
+                                        .retrieve()
+                                        .body(ComputeRoutesResponse.class);
 
-                var request = new ComputeRoutesRequest(
-                                new ComputeRoutesRequest.Waypoint(
-                                                new ComputeRoutesRequest.Location(
-                                                                new ComputeRoutesRequest.LatLng(originLat, originLon))),
-                                new ComputeRoutesRequest.Waypoint(
-                                                new ComputeRoutesRequest.Location(
-                                                                new ComputeRoutesRequest.LatLng(destLat, destLon))),
-                                "DRIVE");
-
-                ComputeRoutesResponse response = restClient.post()
-                                .uri(COMPUTE_ROUTES_URI)
-                                .header(
-                                                "X-Goog-FieldMask",
-                                                X_GOOG_FIELD_MASK)
-                                .body(request)
-                                .retrieve()
-                                .body(ComputeRoutesResponse.class);
-
-                if (response == null || response.routes() == null || response.routes().isEmpty()) {
-                        throw new BusinessException(ErrorCode.ROUTE_NOT_FOUND);
+                        if (response == null || response.routes() == null || response.routes().isEmpty()) {
+                                throw new BusinessException(ErrorCode.ROUTE_NOT_FOUND);
+                        }
+                        return (int) response.routes().get(0).distanceMeters();
+                } catch (Exception e) {
+                        throw new BusinessException(ErrorCode.DISTANCE_SERVICE_ERROR);
                 }
-                return (int) response.routes().get(0).distanceMeters();
         }
 
 }

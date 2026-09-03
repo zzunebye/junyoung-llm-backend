@@ -8,7 +8,8 @@ public enum ErrorCode {
     INVALID_ORDER_STATUS_UPDATE(HttpStatus.BAD_REQUEST),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR),
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST),
-    ROUTE_NOT_FOUND(HttpStatus.NOT_FOUND);
+    ROUTE_NOT_FOUND(HttpStatus.NOT_FOUND),
+    DISTANCE_SERVICE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final HttpStatus httpStatus;
 
