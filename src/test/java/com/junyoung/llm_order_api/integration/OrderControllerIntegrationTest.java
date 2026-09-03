@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -21,11 +22,15 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 import tools.jackson.databind.ObjectMapper;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.springframework.web.client.HttpClientErrorException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.junyoung.llm_order_api.dto.PlaceOrderRequest;
 import com.junyoung.llm_order_api.dto.TakeOrderRequest;
+import com.junyoung.llm_order_api.entity.Order;
+import com.junyoung.llm_order_api.entity.OrderStatus;
 import com.junyoung.llm_order_api.repository.OrderRepository;
 import com.junyoung.llm_order_api.service.DistanceService;
 
@@ -129,6 +134,54 @@ public class OrderControllerIntegrationTest {
         assertThat(takeResponse.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(objectMapper.readTree(takeResponse.getBody()).get("status").asString())
                 .isEqualTo("SUCCESS");
+    }
+
+    @Test
+    void takeOrder_twice_onlyFirstRequestSucceeds() throws Exception {
+        // given
+        var restClient = RestClient.create(getOrigin());
+        var order = Order.create(
+                22.3193,
+                114.1694,
+                22.3964,
+                114.1095,
+                1000);
+
+        long orderId = orderRepository.saveAndFlush(order).getId();
+
+        // when calling takeOrder API
+        var takeResponse = restClient.patch()
+                .uri("/orders/{id}", orderId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new TakeOrderRequest("TAKEN"))
+                .retrieve()
+                .toEntity(String.class);
+
+        assertThat(takeResponse.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(objectMapper.readTree(takeResponse.getBody())
+                .get("status").asString())
+                .isEqualTo("SUCCESS");
+
+        // when calling takeOrder API again
+        assertThatThrownBy(() -> restClient.patch()
+                .uri("/orders/{id}", orderId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new TakeOrderRequest("TAKEN"))
+                .retrieve()
+                .toEntity(String.class))
+                .isInstanceOf(HttpClientErrorException.BadRequest.class)
+                .satisfies(ex -> {
+                    var body = objectMapper.readTree(((HttpClientErrorException) ex).getResponseBodyAsString());
+                    assertThat(body.get("error").asString()).isEqualTo("ORDER_ALREADY_TAKEN");
+                });
+
+        // then the order is taken by the first request
+        var orderOptional = orderRepository.findById(orderId);
+        assertThat(orderOptional)
+                .isPresent();
+        assertThat(orderOptional.get().getStatus())
+                .isEqualTo(OrderStatus.TAKEN);
+
     }
 
 }
