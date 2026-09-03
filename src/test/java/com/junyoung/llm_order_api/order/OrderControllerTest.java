@@ -1,4 +1,4 @@
-package com.junyoung.llm_order_api.controller;
+package com.junyoung.llm_order_api.order;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -24,8 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.junyoung.llm_order_api.exceptions.GlobalExceptionHandler;
-import com.junyoung.llm_order_api.order.OrderController;
-import com.junyoung.llm_order_api.order.OrderService;
 import com.junyoung.llm_order_api.order.dto.OrderResponse;
 import com.junyoung.llm_order_api.order.dto.PlaceOrderRequest;
 import com.junyoung.llm_order_api.order.dto.PlaceOrderResponse;

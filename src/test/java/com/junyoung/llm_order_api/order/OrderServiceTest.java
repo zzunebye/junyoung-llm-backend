@@ -1,4 +1,4 @@
-package com.junyoung.llm_order_api.service;
+package com.junyoung.llm_order_api.order;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.never;
@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,8 +20,6 @@ import org.springframework.data.domain.Pageable;
 import com.junyoung.llm_order_api.distance.DistanceService;
 import com.junyoung.llm_order_api.exceptions.BusinessException;
 import com.junyoung.llm_order_api.exceptions.ErrorCode;
-import com.junyoung.llm_order_api.order.OrderRepository;
-import com.junyoung.llm_order_api.order.OrderService;
 import com.junyoung.llm_order_api.order.dto.PlaceOrderRequest;
 import com.junyoung.llm_order_api.order.dto.TakeOrderRequest;
 import com.junyoung.llm_order_api.order.entity.Order;
