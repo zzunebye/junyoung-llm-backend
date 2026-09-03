@@ -28,6 +28,10 @@ public class OrderService {
         this.distanceService = distanceService;
     }
 
+    private static boolean outOfRange(double lat, double lon) {
+        return lat < -90 || lat > 90 || lon < -180 || lon > 180;
+    }
+
     @Transactional
     public PlaceOrderResponse placeOrder(PlaceOrderRequest request) {
         try {
@@ -35,6 +39,11 @@ public class OrderService {
             double startLon = Double.parseDouble(request.origin().get(1));
             double endLat = Double.parseDouble(request.destination().get(0));
             double endLon = Double.parseDouble(request.destination().get(1));
+
+            if (outOfRange(startLat, startLon) || outOfRange(endLat, endLon)) {
+                throw new BusinessException(ErrorCode.VALIDATION_ERROR);
+            }
+
             int distance = distanceService.getDistance(startLat, startLon, endLat, endLon);
             Order order = Order.create(startLat, startLon, endLat, endLon, distance);
             Order savedOrder = orderRepository.save(order);

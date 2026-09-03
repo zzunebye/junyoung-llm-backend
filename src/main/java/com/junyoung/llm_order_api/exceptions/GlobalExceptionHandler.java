@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.UnexpectedTypeException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -28,7 +29,9 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException.class,
             MethodArgumentTypeMismatchException.class,
             HttpMessageNotReadableException.class,
-            ConstraintViolationException.class })
+            ConstraintViolationException.class,
+            UnexpectedTypeException.class })
+
     public ResponseEntity<ErrorResponse> handleValidationException(Exception ex) {
         log.warn("Validation Exception: {} - {}", ex.getClass().getName(), ex.getMessage());
         ErrorCode errorCode = ErrorCode.VALIDATION_ERROR;
