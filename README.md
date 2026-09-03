@@ -7,6 +7,7 @@ A REST API for placing, taking, and listing delivery orders.
 Docker is prerequisite.
 
 ```bash
+
 ./start.sh
 ```
 
@@ -24,6 +25,9 @@ Create `.env.local` in the project root and set the key as the value for the `GO
 
 ```bash
 export GOOGLE_MAPS_API_KEY=your_actual_api_key
+# or
+cp .env.example .env.local
+
 ./start.sh
 ```
 
