@@ -1,4 +1,4 @@
-package com.junyoung.llm_order_api.entity;
+package com.junyoung.llm_order_api.order.entity;
 
 import java.time.Instant;
 

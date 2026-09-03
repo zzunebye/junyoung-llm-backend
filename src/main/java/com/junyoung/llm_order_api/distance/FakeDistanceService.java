@@ -1,4 +1,4 @@
-package com.junyoung.llm_order_api.service;
+package com.junyoung.llm_order_api.distance;
 
 import java.util.Random;
 

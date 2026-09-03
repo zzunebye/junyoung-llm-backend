@@ -1,12 +1,12 @@
-package com.junyoung.llm_order_api.repository;
+package com.junyoung.llm_order_api.order;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.junyoung.llm_order_api.entity.Order;
-import com.junyoung.llm_order_api.entity.OrderStatus;
+import com.junyoung.llm_order_api.order.entity.Order;
+import com.junyoung.llm_order_api.order.entity.OrderStatus;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
   @Modifying(clearAutomatically = true)

@@ -1,4 +1,4 @@
-package com.junyoung.llm_order_api.dto;
+package com.junyoung.llm_order_api.order.dto;
 
 import tools.jackson.core.JsonParser;
 import tools.jackson.core.JsonToken;

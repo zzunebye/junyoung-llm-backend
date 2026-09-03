@@ -1,15 +1,14 @@
-package com.junyoung.llm_order_api.controller;
+package com.junyoung.llm_order_api.order;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.junyoung.llm_order_api.dto.OrderResponse;
-import com.junyoung.llm_order_api.dto.PlaceOrderRequest;
-import com.junyoung.llm_order_api.dto.PlaceOrderResponse;
-import com.junyoung.llm_order_api.dto.TakeOrderRequest;
-import com.junyoung.llm_order_api.dto.TakeOrderResponse;
-import com.junyoung.llm_order_api.service.OrderService;
+import com.junyoung.llm_order_api.order.dto.OrderResponse;
+import com.junyoung.llm_order_api.order.dto.PlaceOrderRequest;
+import com.junyoung.llm_order_api.order.dto.PlaceOrderResponse;
+import com.junyoung.llm_order_api.order.dto.TakeOrderRequest;
+import com.junyoung.llm_order_api.order.dto.TakeOrderResponse;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;

@@ -1,7 +1,7 @@
-package com.junyoung.llm_order_api.dto;
+package com.junyoung.llm_order_api.order.dto;
 
-import com.junyoung.llm_order_api.entity.Order;
-import com.junyoung.llm_order_api.entity.OrderStatus;
+import com.junyoung.llm_order_api.order.entity.Order;
+import com.junyoung.llm_order_api.order.entity.OrderStatus;
 
 public record OrderResponse(
                 Long id,

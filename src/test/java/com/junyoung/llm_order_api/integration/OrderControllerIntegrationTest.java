@@ -27,12 +27,12 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.junyoung.llm_order_api.dto.PlaceOrderRequest;
-import com.junyoung.llm_order_api.dto.TakeOrderRequest;
-import com.junyoung.llm_order_api.entity.Order;
-import com.junyoung.llm_order_api.entity.OrderStatus;
-import com.junyoung.llm_order_api.repository.OrderRepository;
-import com.junyoung.llm_order_api.service.DistanceService;
+import com.junyoung.llm_order_api.distance.DistanceService;
+import com.junyoung.llm_order_api.order.OrderRepository;
+import com.junyoung.llm_order_api.order.dto.PlaceOrderRequest;
+import com.junyoung.llm_order_api.order.dto.TakeOrderRequest;
+import com.junyoung.llm_order_api.order.entity.Order;
+import com.junyoung.llm_order_api.order.entity.OrderStatus;
 
 /**
  * OrderControllerIntegrationTest

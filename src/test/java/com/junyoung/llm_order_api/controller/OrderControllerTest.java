@@ -23,14 +23,15 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import com.junyoung.llm_order_api.dto.OrderResponse;
-import com.junyoung.llm_order_api.dto.PlaceOrderRequest;
-import com.junyoung.llm_order_api.dto.PlaceOrderResponse;
-import com.junyoung.llm_order_api.dto.TakeOrderRequest;
-import com.junyoung.llm_order_api.dto.TakeOrderResponse;
-import com.junyoung.llm_order_api.entity.OrderStatus;
 import com.junyoung.llm_order_api.exceptions.GlobalExceptionHandler;
-import com.junyoung.llm_order_api.service.OrderService;
+import com.junyoung.llm_order_api.order.OrderController;
+import com.junyoung.llm_order_api.order.OrderService;
+import com.junyoung.llm_order_api.order.dto.OrderResponse;
+import com.junyoung.llm_order_api.order.dto.PlaceOrderRequest;
+import com.junyoung.llm_order_api.order.dto.PlaceOrderResponse;
+import com.junyoung.llm_order_api.order.dto.TakeOrderRequest;
+import com.junyoung.llm_order_api.order.dto.TakeOrderResponse;
+import com.junyoung.llm_order_api.order.entity.OrderStatus;
 
 import tools.jackson.databind.ObjectMapper;
 

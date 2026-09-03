@@ -1,4 +1,4 @@
-package com.junyoung.llm_order_api.service;
+package com.junyoung.llm_order_api.order;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,16 +6,17 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.junyoung.llm_order_api.dto.OrderResponse;
-import com.junyoung.llm_order_api.dto.PlaceOrderRequest;
-import com.junyoung.llm_order_api.dto.PlaceOrderResponse;
-import com.junyoung.llm_order_api.dto.TakeOrderRequest;
-import com.junyoung.llm_order_api.dto.TakeOrderResponse;
-import com.junyoung.llm_order_api.entity.Order;
-import com.junyoung.llm_order_api.entity.OrderStatus;
+
+import com.junyoung.llm_order_api.distance.DistanceService;
 import com.junyoung.llm_order_api.exceptions.BusinessException;
 import com.junyoung.llm_order_api.exceptions.ErrorCode;
-import com.junyoung.llm_order_api.repository.OrderRepository;
+import com.junyoung.llm_order_api.order.dto.OrderResponse;
+import com.junyoung.llm_order_api.order.dto.PlaceOrderRequest;
+import com.junyoung.llm_order_api.order.dto.PlaceOrderResponse;
+import com.junyoung.llm_order_api.order.dto.TakeOrderRequest;
+import com.junyoung.llm_order_api.order.dto.TakeOrderResponse;
+import com.junyoung.llm_order_api.order.entity.Order;
+import com.junyoung.llm_order_api.order.entity.OrderStatus;
 
 @Service
 @Validated

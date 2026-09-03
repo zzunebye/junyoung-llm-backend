@@ -18,13 +18,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import com.junyoung.llm_order_api.dto.PlaceOrderRequest;
-import com.junyoung.llm_order_api.dto.TakeOrderRequest;
-import com.junyoung.llm_order_api.entity.Order;
-import com.junyoung.llm_order_api.entity.OrderStatus;
+import com.junyoung.llm_order_api.distance.DistanceService;
 import com.junyoung.llm_order_api.exceptions.BusinessException;
 import com.junyoung.llm_order_api.exceptions.ErrorCode;
-import com.junyoung.llm_order_api.repository.OrderRepository;
+import com.junyoung.llm_order_api.order.OrderRepository;
+import com.junyoung.llm_order_api.order.OrderService;
+import com.junyoung.llm_order_api.order.dto.PlaceOrderRequest;
+import com.junyoung.llm_order_api.order.dto.TakeOrderRequest;
+import com.junyoung.llm_order_api.order.entity.Order;
+import com.junyoung.llm_order_api.order.entity.OrderStatus;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
