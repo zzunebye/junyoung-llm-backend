@@ -11,6 +11,7 @@ import com.junyoung.llm_order_api.order.dto.TakeOrderRequest;
 import com.junyoung.llm_order_api.order.dto.TakeOrderResponse;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
@@ -49,7 +50,7 @@ public class OrderController {
     @GetMapping
     public List<OrderResponse> getOrders(
             @RequestParam(defaultValue = "1") @Min(1) int page,
-            @RequestParam(defaultValue = "10") @Min(1) int limit) {
+            @RequestParam(defaultValue = "10") @Min(1) @Max(100) int limit) {
         return orderService.getOrders(page, limit);
     }
 

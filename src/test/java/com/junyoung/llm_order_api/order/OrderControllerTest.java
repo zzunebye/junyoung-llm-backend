@@ -130,6 +130,15 @@ public class OrderControllerTest {
         }
 
         @Test
+        void getOrders_returnsBadRequest_WhenLimitIsGreaterThanAllowed() throws Exception {
+                var action = mockMvc.perform(get("/orders")
+                                .param("limit", "101"));
+                action.andExpect(status().isBadRequest())
+                                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
+                verifyNoInteractions(orderService);
+        }
+
+        @Test
         void placeOrder_returnsOk() throws Exception {
                 // given
                 var request = new PlaceOrderRequest(List.of("22.3193", "114.1694"), List.of("22.3964", "114.1095"));
