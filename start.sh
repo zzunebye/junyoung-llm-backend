@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 # run this shell file will spin up the server, DB.
 if [ -f .env.local ]; then
