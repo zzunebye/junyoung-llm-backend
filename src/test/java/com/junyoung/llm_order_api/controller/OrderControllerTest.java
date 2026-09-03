@@ -151,9 +151,62 @@ public class OrderControllerTest {
         }
 
         @Test
+        void placeOrder_returnsOk_WhenCoordinateIsInteger() throws Exception {
+                // given
+                var request = new PlaceOrderRequest(List.of("22", "114"), List.of("22", "114"));
+                when(orderService.placeOrder(any(PlaceOrderRequest.class)))
+                                .thenReturn(new PlaceOrderResponse(1L, 1000, "UNASSIGNED"));
+
+                // when
+                ResultActions action = mockMvc.perform(post("/orders")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)));
+                // then
+                action
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(1))
+                                .andExpect(jsonPath("$.distance").value(1000))
+                                .andExpect(jsonPath("$.status").value("UNASSIGNED"));
+                verify(orderService).placeOrder(request);
+        }
+
+        @Test
+        void placeOrder_returnsOk_WhenCoordinateIsNegative() throws Exception {
+                // given
+                var request = new PlaceOrderRequest(List.of("-22", "-114"), List.of("-22", "-114"));
+                when(orderService.placeOrder(any(PlaceOrderRequest.class)))
+                                .thenReturn(new PlaceOrderResponse(1L, 1000, "UNASSIGNED"));
+
+                // when
+                ResultActions action = mockMvc.perform(post("/orders")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)));
+                // then
+                action
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(1))
+                                .andExpect(jsonPath("$.distance").value(1000))
+                                .andExpect(jsonPath("$.status").value("UNASSIGNED"));
+                verify(orderService).placeOrder(request);
+        }
+
+        @Test
         void placeOrder_returnsBadRequest_WhenCoordinateAreMissing() throws Exception {
                 // given
                 var request = new PlaceOrderRequest(List.of("22.3193"), List.of("22.3964", "114.1095"));
+                // when
+                var action = mockMvc.perform(post("/orders")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)));
+                // then
+                action.andExpect(status().isBadRequest())
+                                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
+        }
+
+        @Test
+        void placeOrder_returnsBadRequest_WhenCoordinateIsEmptyString() throws Exception {
+                // given
+                var request = new PlaceOrderRequest(List.of("22.3193", ""), List.of("22.3964", "114.1095"));
                 // when
                 var action = mockMvc.perform(post("/orders")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -189,6 +242,48 @@ public class OrderControllerTest {
                 // then
                 action.andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
+        }
+
+        @Test
+        void placeOrder_returnsBadRequest_WhenDestinationIsMissing() throws Exception {
+                // given
+                var request = new PlaceOrderRequest(List.of("22.3193", "114.1095"), null);
+                // when
+                var action = mockMvc.perform(post("/orders")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)));
+                // then
+                action.andExpect(status().isBadRequest()).andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
+        }
+
+        @Test
+        void placeOrder_returnsBadRequest_WhenCoordinateIsNull() throws Exception {
+                // given
+                // when
+                var action = mockMvc.perform(post("/orders")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                // NULL cannot be used to create request object hence using json string
+                                .content("""
+                                                {
+                                                  "origin": ["22.22", null],
+                                                  "destination": ["22.3964", "114.1095"]
+                                                }
+                                                """));
+                // then
+                action.andExpect(status().isBadRequest()).andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
+        }
+
+        @Test
+        void placeOrder_returnsBadRequest_WhenDestinationIsEmptyString() throws Exception {
+                // given
+                var request = new PlaceOrderRequest(List.of("22.3193", "114.1095"), List.of());
+
+                // when
+                var action = mockMvc.perform(post("/orders")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)));
+                // then
+                action.andExpect(status().isBadRequest()).andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
         }
 
         @Test

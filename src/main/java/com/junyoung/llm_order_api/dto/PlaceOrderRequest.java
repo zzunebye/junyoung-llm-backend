@@ -21,7 +21,7 @@ import tools.jackson.databind.annotation.JsonDeserialize;
  *                    the number pattern (e.g., "-23.5", "120").
  */
 public record PlaceOrderRequest(
-        @NotNull @Size(min = 2, max = 2) @JsonDeserialize(contentUsing = StrictStringDeserializer.class) List<@Pattern(regexp = "^-?\\d+(\\.\\d+)?$") String> origin,
+        @NotNull @Size(min = 2, max = 2) @JsonDeserialize(contentUsing = StrictStringDeserializer.class) List<@NotNull @Pattern(regexp = "^-?\\d+(\\.\\d+)?$") String> origin,
 
-        @NotNull @Size(min = 2, max = 2) @JsonDeserialize(contentUsing = StrictStringDeserializer.class) List<@Pattern(regexp = "^-?\\d+(\\.\\d+)?$") String> destination) {
+        @NotNull @Size(min = 2, max = 2) @JsonDeserialize(contentUsing = StrictStringDeserializer.class) List<@NotNull @Pattern(regexp = "^-?\\d+(\\.\\d+)?$") String> destination) {
 }
