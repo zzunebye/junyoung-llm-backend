@@ -91,14 +91,15 @@ public class OrderServiceTest {
                 var order = Order.create(22.3193, 114.1694, 22.3964, 114.1095, 1000);
                 order.setStatus(OrderStatus.UNASSIGNED);
 
-                when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+                when(orderRepository.takeOrder(orderId, OrderStatus.TAKEN, OrderStatus.UNASSIGNED)).thenReturn(1);
 
                 // When
                 var response = orderService.takeOrder(request, orderId);
 
                 // Then
+                verify(orderRepository).takeOrder(orderId, OrderStatus.TAKEN, OrderStatus.UNASSIGNED);
+                verify(orderRepository, never()).existsById(orderId);
                 assertThat(response.status()).isEqualTo("SUCCESS");
-                assertThat(order.getStatus()).isEqualTo(OrderStatus.TAKEN);
         }
 
         @Test
@@ -106,14 +107,16 @@ public class OrderServiceTest {
                 // Given
                 var orderId = 1L;
                 var request = new TakeOrderRequest("TAKEN");
-                when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+                when(orderRepository.takeOrder(orderId, OrderStatus.TAKEN, OrderStatus.UNASSIGNED)).thenReturn(0);
+                when(orderRepository.existsById(orderId)).thenReturn(false);
 
-                // Then
+                // When-Then
                 assertThatThrownBy(() -> orderService.takeOrder(request, orderId))
                                 .isInstanceOf(BusinessException.class)
                                 .extracting(ex -> ((BusinessException) ex).getErrorCode())
                                 .isEqualTo(ErrorCode.ORDER_NOT_FOUND);
-
+                verify(orderRepository).takeOrder(orderId, OrderStatus.TAKEN, OrderStatus.UNASSIGNED);
+                verify(orderRepository).existsById(orderId);
         }
 
         @Test
@@ -123,13 +126,17 @@ public class OrderServiceTest {
                 var request = new TakeOrderRequest("TAKEN");
                 var order = Order.create(22.3193, 114.1694, 22.3964, 114.1095, 1000);
                 order.setStatus(OrderStatus.TAKEN);
-                when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+                order.setId(orderId);
+                when(orderRepository.takeOrder(orderId, OrderStatus.TAKEN, OrderStatus.UNASSIGNED)).thenReturn(0);
+                when(orderRepository.existsById(orderId)).thenReturn(true);
 
+                // When-Then
                 assertThatThrownBy(() -> orderService.takeOrder(request, orderId))
                                 .isInstanceOf(BusinessException.class)
                                 .extracting(ex -> ((BusinessException) ex).getErrorCode())
                                 .isEqualTo(ErrorCode.ORDER_ALREADY_TAKEN);
-
+                verify(orderRepository).takeOrder(orderId, OrderStatus.TAKEN, OrderStatus.UNASSIGNED);
+                verify(orderRepository).existsById(orderId);
         }
 
         @Test
