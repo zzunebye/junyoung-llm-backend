@@ -1,8 +1,8 @@
 # Dev Log
 
-In this file includes the thoughts and decision making process for writing the solutions for backend challenge of lalamove.
+In this file includes the thoughts and decision making process for writing the solutions
 
-I've just read the challenge problem statement and requirements. The document has given very clear contract, about order service API server.
+I've just read the problem statement and requirements. The document has given very clear contract, about order service API server.
 
 Some noticable points from requirements are:
 
@@ -76,6 +76,7 @@ Some alignments to make on the implementation:
 
 - use int for the request parameter of get request and handle the case of null.
 - business validation for taken order to be fixed on the service code.
+- PlaceOrderRequest's validation must be throughly tested
 
 What to be added:
 
