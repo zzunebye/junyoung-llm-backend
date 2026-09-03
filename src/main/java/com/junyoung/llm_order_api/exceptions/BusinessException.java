@@ -1,5 +1,6 @@
 package com.junyoung.llm_order_api.exceptions;
 
+// Custom exception class for business logics
 public class BusinessException extends RuntimeException {
     private final ErrorCode errorCode;
 

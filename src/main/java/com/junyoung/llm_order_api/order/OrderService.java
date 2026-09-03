@@ -46,8 +46,10 @@ public class OrderService {
             }
 
             int distance = distanceService.getDistance(startLat, startLon, endLat, endLon);
+
             Order order = Order.create(startLat, startLon, endLat, endLon, distance);
             Order savedOrder = orderRepository.save(order);
+
             return new PlaceOrderResponse(
                     savedOrder.getId(),
                     savedOrder.getDistance(),
@@ -64,10 +66,10 @@ public class OrderService {
             throw new BusinessException(ErrorCode.INVALID_ORDER_STATUS_UPDATE);
         }
 
-        int updated = orderRepository
+        int updatedRows = orderRepository
                 .takeOrder(orderId, OrderStatus.TAKEN, OrderStatus.UNASSIGNED);
 
-        if (updated == 0) {
+        if (updatedRows == 0) {
             if (!orderRepository.existsById(orderId)) {
                 throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
             }
