@@ -4,13 +4,11 @@ A REST API for placing, taking, and listing delivery orders.
 
 ## How to Run
 
+Docker is prerequisite.
+
 ```bash
 start.sh
 ```
-
-### Prerequisites
-
-Docker
 
 ## How to run test
 
@@ -20,11 +18,9 @@ Docker
 
 ## Setup
 
-A GOOGLE_MAPS_API_KEY is required to use the Google Maps API.
+A `GOOGLE_MAPS_API_KEY` is required to use the Google Maps API.
 
-Create `.env.local` in the project root and set the key as the value for the `GOOGLE_MAPS_API_KEY` environment variable.
-
-_`start.sh` is injecting `.env.local` into the container_.
+Create `.env.local` in the project root and set the key as the value for the `GOOGLE_MAPS_API_KEY` environment variable. (`start.sh` _is injecting_ `.env.local` _into the container._)
 
 ```bash
 export GOOGLE_MAPS_API_KEY=your_actual_api_key
