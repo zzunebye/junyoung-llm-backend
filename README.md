@@ -7,7 +7,7 @@ A REST API for placing, taking, and listing delivery orders.
 Docker is prerequisite.
 
 ```bash
-start.sh
+./start.sh
 ```
 
 ## How to run test
