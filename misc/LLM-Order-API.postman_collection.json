@@ -1,0 +1,195 @@
+{
+  "info": {
+    "name": "LLM Backend Order API",
+    "description": "Place / take / list delivery orders. Spec: CHALLENGE.md",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "orderId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Place order",
+      "item": [
+        {
+          "name": "Place order (success)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('has id, distance, UNASSIGNED', () => {",
+                  "  pm.expect(body).to.have.property('id');",
+                  "  pm.expect(body.distance).to.be.a('number');",
+                  "  pm.expect(body.status).to.eql('UNASSIGNED');",
+                  "});",
+                  "if (body.id) {",
+                  "  pm.collectionVariables.set('orderId', String(body.id));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origin\": [\"22.3193\", \"114.1694\"],\n  \"destination\": [\"22.3964\", \"114.1095\"]\n}"
+            },
+            "url": "{{baseUrl}}/orders"
+          }
+        },
+        {
+          "name": "Place order (invalid coordinates - not two strings)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 4xx', () => pm.expect(pm.response.code).to.be.within(400, 499));",
+                  "pm.test('error body is json', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origin\": [22.3193, 114.1694],\n  \"destination\": [\"22.3964\"]\n}"
+            },
+            "url": "{{baseUrl}}/orders"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Take order",
+      "item": [
+        {
+          "name": "Take order (success)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('status SUCCESS', () => pm.expect(pm.response.json().status).to.eql('SUCCESS'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"TAKEN\"\n}"
+            },
+            "url": "{{baseUrl}}/orders/{{orderId}}"
+          }
+        },
+        {
+          "name": "Take order (already taken / not found)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 4xx', () => pm.expect(pm.response.code).to.be.within(400, 499));",
+                  "pm.test('error body is json', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"TAKEN\"\n}"
+            },
+            "url": "{{baseUrl}}/orders/999999"
+          }
+        }
+      ]
+    },
+    {
+      "name": "List orders",
+      "item": [
+        {
+          "name": "List orders (page=1, limit=10)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('body is an array', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/orders?page=1&limit=10"
+          }
+        },
+        {
+          "name": "List orders (invalid page)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 4xx', () => pm.expect(pm.response.code).to.be.within(400, 499));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/orders?page=abc&limit=10"
+          }
+        }
+      ]
+    }
+  ]
+}

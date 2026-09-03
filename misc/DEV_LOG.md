@@ -82,3 +82,21 @@ What to be added:
 
 - Pagination (spec)
 - Google map integration
+
+origin/destination
+
+- should exist (cannot be omitted).
+- exactly two elements
+- each element must not be empty string
+- each element must be number written in string
+- validate lat and lon are in the range of -90 to 90 and -180 to 180 respectively
+
+In addition, actually it must be okay to convert the string to double on controller. No need to double.parse
+
+> Coordinates **in request** must be an array of exactly two strings. The type shall only be strings, not integers or floats.
+
+---
+
+Oh.. why didn't I not think about using regex?
+
+---
