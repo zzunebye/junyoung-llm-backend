@@ -41,7 +41,7 @@ public class Order {
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false, insertable = false, updatable = false)
+    @Column(name = "updated_at", nullable = false, insertable = false)
     private Instant updatedAt;
 
     public static Order create(Double startLatitude, Double startLongitude, Double endLatitude, Double endLongitude,

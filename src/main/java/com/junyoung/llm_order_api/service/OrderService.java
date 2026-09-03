@@ -59,17 +59,19 @@ public class OrderService {
 
     @Transactional
     public TakeOrderResponse takeOrder(TakeOrderRequest request, Long orderId) {
-        Order order = orderRepository
-                .findById(orderId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
-
-        if (order.getStatus().equals(OrderStatus.TAKEN)) {
-            throw new BusinessException(ErrorCode.ORDER_ALREADY_TAKEN);
+        if (!OrderStatus.TAKEN.name().equals(request.status())) {
+            throw new BusinessException(ErrorCode.INVALID_ORDER_STATUS_UPDATE);
         }
 
-        order.setStatus(OrderStatus.TAKEN);
-        orderRepository.save(order);
+        int updated = orderRepository
+                .takeOrder(orderId, OrderStatus.TAKEN, OrderStatus.UNASSIGNED);
 
+        if (updated == 0) {
+            if (!orderRepository.existsById(orderId)) {
+                throw new BusinessException(ErrorCode.ORDER_NOT_FOUND);
+            }
+            throw new BusinessException(ErrorCode.ORDER_ALREADY_TAKEN);
+        }
         return new TakeOrderResponse("SUCCESS");
     }
 
