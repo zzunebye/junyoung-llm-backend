@@ -9,7 +9,6 @@ import org.springframework.web.client.RestClient;
 import com.junyoung.llm_order_api.exceptions.BusinessException;
 import com.junyoung.llm_order_api.exceptions.ErrorCode;
 
-// Why need to return and store int not long?
 @Service
 @ConditionalOnProperty(name = "maps.provider", havingValue = "GOOGLE", matchIfMissing = true)
 public class GoogleDistanceService implements DistanceService {
