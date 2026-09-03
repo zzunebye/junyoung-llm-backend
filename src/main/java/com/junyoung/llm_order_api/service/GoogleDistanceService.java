@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import com.junyoung.llm_order_api.exceptions.BusinessException;
+import com.junyoung.llm_order_api.exceptions.ErrorCode;
 import com.junyoung.llm_order_api.maps.MapsProperties;
 
 // Why need to return and store int not long?
@@ -14,13 +16,17 @@ import com.junyoung.llm_order_api.maps.MapsProperties;
 public class GoogleDistanceService implements DistanceService {
     private final RestClient restClient;
 
+    private static final String BASE_URL = "https://routes.googleapis.com";
+    private static final String COMPUTE_ROUTES_URI = "/directions/v2:computeRoutes";
+    private static final String X_GOOG_FIELD_MASK = "routes.distanceMeters";
+
     public GoogleDistanceService(
             RestClient.Builder restClientBuilder,
             MapsProperties mapsProperties
 
     ) {
         this.restClient = restClientBuilder
-                .baseUrl("https://routes.googleapis.com")
+                .baseUrl(BASE_URL)
                 .defaultHeader(
                         "X-Goog-Api-Key",
                         mapsProperties.apiKey())
@@ -38,16 +44,16 @@ public class GoogleDistanceService implements DistanceService {
                 "DRIVE");
 
         ComputeRoutesResponse response = restClient.post()
-                .uri("/directions/v2:computeRoutes")
+                .uri(COMPUTE_ROUTES_URI)
                 .header(
                         "X-Goog-FieldMask",
-                        "routes.distanceMeters")
+                        X_GOOG_FIELD_MASK)
                 .body(request)
                 .retrieve()
                 .body(ComputeRoutesResponse.class);
 
-        if (response == null || response.routes().isEmpty()) {
-            throw new IllegalStateException("Route not found");
+        if (response == null || response.routes() == null || response.routes().isEmpty()) {
+            throw new BusinessException(ErrorCode.ROUTE_NOT_FOUND);
         }
         return (int) response.routes().get(0).distanceMeters();
     }
